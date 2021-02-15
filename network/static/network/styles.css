@@ -1,4 +1,5 @@
 .no-border {
     border: 0;
+    outline: none;
     background-color: transparent !important;
 }
