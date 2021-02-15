@@ -114,6 +114,10 @@ def allposts(request):
     if not request.user.is_authenticated:
         return redirect('login')
     
+    for post in allposts:
+        post.liked = Like.objects.filter(who_liked_it=user, post=post).exists()
+        post.save()
+    
     p = Paginator(allposts, 10)
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
@@ -170,6 +174,7 @@ def postpages(request):
 def user_list(request, author):
     author = User.objects.get(id=author)
     posts = Post.objects.filter(author=author)
+    user = request.user
 
     button = "Follow" if Author.objects.filter(user_from=request.user, user_to=author).count() == 0 else "Unfollow"
 
@@ -181,6 +186,10 @@ def user_list(request, author):
             button = "Follow"
             Author.objects.get(user_from=request.user, user_to=author).delete()
 
+    for post in posts:
+        post.liked = Like.objects.filter(who_liked_it=user, post=post).exists()
+        post.save()
+
     p = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
@@ -190,7 +199,8 @@ def user_list(request, author):
         "following": Author.objects.filter(user_from=author).count(), 
         "page_obj": page_obj, 
         "author": author,
-        "button": button
+        "button": button,
+        "user":user
     }
 
     return render(request, 'network/user/list.html', args)
@@ -205,6 +215,9 @@ def following(request):
 
     posts = Post.objects.filter(author__in=following_posts)
 
+    for post in posts:
+        post.liked = Like.objects.filter(who_liked_it=user, post=post).exists()
+        post.save()
 
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
@@ -222,3 +235,19 @@ def following(request):
     })
 
 
+def liketoggle(request, post_id):
+
+    post = Post.objects.get(id=post_id)
+    user = request.user
+
+    # like_check = Like.objects.filter(who_liked_it=user, post=post).exists()
+
+    if request.method == 'POST':
+        Like.objects.filter(who_liked_it=user, post=post).delete() if Like.objects.filter(who_liked_it=user, post=post).exists() else Like.objects.create(who_liked_it=user, post=post)
+        return HttpResponse(status=204)
+    else:
+        return HttpResponse(status=204)
+    
+
+
+    

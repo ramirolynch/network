@@ -23,6 +23,7 @@ urlpatterns = [
     path("allposts", views.allposts, name="allposts"),
     path("postpages", views.postpages, name="postpages"),
     path("following", views.following, name="following"),
+    path("liketoggle/<int:post_id>", views.liketoggle, name="liketoggle"),
     path("user/<str:author>/", views.user_list, name="user_list"),
 
      # API Routes

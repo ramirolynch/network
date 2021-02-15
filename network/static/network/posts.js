@@ -32,13 +32,13 @@ let likerColor = liker.getAttribute('fill');
 
 console.log(likerColor);
 
-const greet = document.querySelector(`#greet`);
+// const greet = document.querySelector(`#greet`);
 
-const user = greet.textContent;
+// const user = greet.textContent;
 
-let userlist = new Array(user);
+// let userlist = new Array(user);
 
-console.log(userlist)
+// console.log(userlist)
 
 if (likerColor === "black") {
 
